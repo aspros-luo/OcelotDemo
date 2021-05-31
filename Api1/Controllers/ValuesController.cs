@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api1.Controllers
 {
-    [Route(Program.Version)]
+    [Route(Program.ServiceName+"/"+Program.Version)]
     // [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -18,7 +18,7 @@ namespace Api1.Controllers
         [HttpGet("inside.get")]
         public async Task<IActionResult> InsideGet()
         {
-           var result =   await "http://127.0.0.1:8504/service2/v1/inside.get".GetAsync().ReceiveString();
+           var result =   await "http://127.0.0.1:9999/service2/v1/inside.get".GetAsync().ReceiveString();
             return Ok(result);
         }
     }

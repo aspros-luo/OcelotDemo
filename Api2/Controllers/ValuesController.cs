@@ -2,7 +2,7 @@
 
 namespace Api2.Controllers
 {
-    [Route(Program.Version)]
+    [Route(Program.ServiceName + "/" + Program.Version)]
     // [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase

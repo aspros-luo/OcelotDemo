@@ -1,7 +1,7 @@
 ﻿{
   "Routes": [
     {
-      "DownstreamPathTemplate": "/{url}",
+      "DownstreamPathTemplate": "/service2/{url}",
       "DownstreamScheme": "http",
       "UseServiceDiscovery": true,
       "ServiceName": "service2",
@@ -39,7 +39,7 @@
       //}
     },
     {
-      "DownstreamPathTemplate": "/{url}",
+      "DownstreamPathTemplate": "/service1/{url}",
       "DownstreamScheme": "http",
       "UseServiceDiscovery": true,
       "ServiceName": "service1",
