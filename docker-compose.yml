@@ -1,0 +1,147 @@
+version: '2.0'
+networks:
+    app:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 172.0.10.0/24
+            
+services:
+  consul-server1:
+    image: consul:latest
+    hostname: "consul-server1"
+    container_name: "consul1"
+    # ports:
+    #   - "8500:8500"
+    volumes:
+      - ./consul/data1:/consul/data
+    # command: "agent -server -bootstrap-expect 3 -ui -disable-host-node-id -client 0.0.0.0"
+    command: "agent -server -bind=172.0.10.3 -client=172.0.10.3 -retry-join=172.0.10.2"
+    networks:
+        app:
+            ipv4_address: 172.0.10.3
+  consul-server2:
+    image: consul:latest
+    hostname: "consul-server2"
+    container_name: "consul2"
+    ports:
+      - "8600:8600"
+      - "8500:8500"
+    volumes:
+      - ./consul/data2:/consul/data
+    command: "agent -server -bind=172.0.10.4 -client=172.0.10.4 -retry-join=172.0.10.3 -ui"
+    networks:
+        app:
+            ipv4_address: 172.0.10.4
+    # depends_on: 
+    #   - consul-server1 
+  consul-server3:
+    image: consul:latest
+    hostname: "consul-server3"
+    container_name: "consul3"
+    # ports:
+    #   - "8502:8500"
+    volumes:
+      - ./consul/data3:/consul/data
+    command: "agent -server -bind=172.0.10.5 -client=172.0.10.5 -retry-join=172.0.10.4 -bootstrap-expect=3"
+    networks:
+        app:
+            ipv4_address: 172.0.10.5
+    # depends_on:
+    #   - consul-server1
+  fabio:
+    image: "magiconair/fabio"
+    container_name: "fabio"
+    networks:
+        app:
+            ipv4_address: 172.0.10.6
+    ports:
+      - "9998:9998"
+      - "9999:9999"
+    volumes:
+      - ./fabio.properties:/etc/fabio/fabio.properties
+  #   links: 
+  #       - consul-server1
+
+  mysql:
+        image: mysql
+        container_name: mysql
+        command:
+            # MySQL8的密码验证方式默认是 caching_sha2_password，但是很多的连接工具还不支持该方式
+            # 就需要手动设置下mysql的密码认证方式为以前的 mysql_native_password 方式
+          --default-authentication-plugin=mysql_native_password
+          --character-set-server=utf8mb4
+          --collation-server=utf8mb4_general_ci
+            # docker的重启策略：在容器退出时总是重启容器，但是不考虑在Docker守护进程启动时就已经停止了的容器
+        restart: unless-stopped
+        environment:
+          MYSQL_ROOT_PASSWORD: 123456 # root用户的密码
+          MYSQL_USER: user # 创建新用户
+          MYSQL_PASSWORD: 123456 # 新用户的密码
+        ports:
+           - "3306:3306"
+        volumes:
+           - ./mysql/data:/var/lib/mysql
+           - ./mysql/conf:/etc/mysql/conf.d
+           - ./mysql/logs:/logs 
+        networks:
+            app:
+                ipv4_address: 172.0.10.7
+
+  # janus-database:
+  #   image: mongo
+  #   container_name: "janus-database"
+  #   ports:
+  #       - "27017:27017"
+  #   networks:
+  #       app:
+  #           ipv4_address: 10.224.1.7
+
+  # janus:
+  #   image: hellofreshtech/janus
+  #   container_name: "janus"
+  #   ports:
+  #       - "8080:8080"
+  #       - "8081:8081"
+  #   depends_on:
+  #       - janus-database
+  #   volumes:
+  #       - ./janus/janus.toml:/etc/janus/janus.toml
+  #   networks:
+  #       app:
+  #           ipv4_address: 10.224.1.8               
+
+  # dashboard:
+  #   image: quay.io/hellofresh/janus-dashboard
+  #   container_name: "janus-dashboard"
+  #   ports:
+  #       - "8082:80"
+  #   depends_on:
+  #       - janus-database
+  #       - janus
+  #   environment:
+  #       REACT_APP_JANUS_URI: http://localhost:8081
+  #       REACT_APP_GITHUB_AUTHORIZE_URL: http://localhost:8080/auth/github/authorize
+  #       REACT_APP_GITHUB_CLIENT_ID: yourClientID
+  #       REACT_APP_GITHUB_SCOPE: read:org
+  #       REACT_APP_GITHUB_TOKEN_URL:  http://localhost:8080/auth/github/token
+  #       REACT_APP_DISABLE_BASIC_AUTH: "false"
+  #       REACT_APP_DISABLE_GITHUB_AUTH: "false"
+  #   networks:
+  #       app:
+  #           ipv4_address: 10.224.1.9
+            
+#   consul-node1:
+#     image: consul:latest
+#     hostname: "consul-node1"
+#     container_name: "consul_node1"
+#     command: "agent -join consul-server1 -disable-host-node-id"
+#     depends_on:
+#       - consul-server1
+#   consul-node2:
+#     image: consul:latest
+#     hostname: "consul-node2"
+#     container_name: "consul_node2"
+#     command: "agent -join consul-server1 -disable-host-node-id"
+#     depends_on:
+#       - consul-server1
