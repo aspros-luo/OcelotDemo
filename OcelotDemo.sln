@@ -9,6 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api1", "Api1\Api1.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api2", "Api2\Api2.csproj", "{167758C9-2961-430D-9B86-BFC9BEA15180}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "publish", "publish", "{D083B819-9523-42F5-86CF-99EEDC219095}"
+	ProjectSection(SolutionItems) = preProject
+		..\aspros-luo\microSerice\docker-compose.yml = ..\aspros-luo\microSerice\docker-compose.yml
+		..\aspros-luo\microSerice\fabio.properties = ..\aspros-luo\microSerice\fabio.properties
+		publish.bat = publish.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
