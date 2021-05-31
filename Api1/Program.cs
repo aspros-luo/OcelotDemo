@@ -22,7 +22,10 @@ namespace Api1
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                        .UseUrls($"http://*:{ApplicationBuilderExtensions.Ip}:{ApplicationBuilderExtensions.Port}") //set url
+                        .UseKestrel()
+                        .UseStartup<Startup>();
                 });
     }
 }

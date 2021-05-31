@@ -28,13 +28,14 @@ namespace Api1
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, Microsoft.Extensions.Hosting.IApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
+            app.RegisterWithConsul(lifetime, new Uri("http://localhost:8500"));//here
             app.UseRouting();
 
             app.UseAuthorization();

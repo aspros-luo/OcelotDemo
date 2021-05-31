@@ -8,7 +8,7 @@
       "LoadBalancerOptions": {
         "Type": "RoundRobin"
       },
-      "UpstreamPathTemplate": "/api/{url}",
+      "UpstreamPathTemplate": "/service2/{url}",
       "UpstreamHttpMethod": [ "Get" ],
 
       ////缓存
@@ -37,6 +37,17 @@
       //  "AuthenticationProviderKey": "userserverkey",
       //  "AllowedScopes": []
       //}
+    },
+    {
+      "DownstreamPathTemplate": "/{url}",
+      "DownstreamScheme": "http",
+      "UseServiceDiscovery": true,
+      "ServiceName": "service1",
+      "LoadBalancerOptions": {
+        "Type": "RoundRobin"
+      },
+      "UpstreamPathTemplate": "/service1/{url}",
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ],
 
